@@ -20,32 +20,32 @@
         </ul>
     </div>
 </div>
-<section id="galerie" class="row w-100 mx-0">
-<?php foreach($monstres as $monstre) : ?>
-    <article class="col-12 col-sm-6 col-md-4 mb-3 w-30 p-2">
-        <div class="card">
-            <a href="?page=monstre_detail&id=<?= $monstre['id'] ?>">
-                <img src="<?php echo $monstre['img'] ?>" class="card-img-top" style="height: 500px;" alt="...">
-            </a>
-            <div class="card-body">
-                <h5 class="card-title"><?php echo $monstre['nom'] ?></h5>
-                <p class="card-text"> <?php echo $monstre['short_description'] ?></p>
+    <section id="galerie" class="row w-100 mx-0">
+    <?php foreach($monstres as $monstre) : ?>
+        <article class="col-12 col-sm-6 col-md-4 mb-3 w-30 p-2">
+            <div class="card">
+                <a href="?page=monstre_detail&id=<?= $monstre['id'] ?>">
+                    <img src="<?php echo $monstre['img'] ?>" class="card-img-top" style="height: 500px;" alt="...">
+                </a>
+                <div class="card-body card-gallery">
+                    <h5 class="card-title"><?php echo $monstre['nom'] ?></h5>
+                    <p class="card-text"> <?php echo $monstre['short_description'] ?></p>
+                </div>
             </div>
-        </div>
-    </article>
-<?php endforeach; ?>
-    <nav aria-label="...">
-    <ul class="pagination">
-        <li class="page-item <?= $pagination == 1 ?  'disabled' : "" ?>"><a class="page-link" 
-        href="?page=gallery&pagination=<?= $pagination - 1 ?><?php echo keepSearch() ?>">Previous</a></li>
-        <?php for($i = 1; $i <= ceil($count / 6); $i++) : ?>
-            <li class="page-item <?= $pagination == $i ?  'active" aria-current="page"' : "" ?>"><a class="page-link" 
-            href="?page=gallery&pagination=<?= $i?><?php echo keepSearch() ?>"><?= $i ?></a></li>
-        <?php endfor; ?>
-        <li class="page-item <?= $pagination == ceil($count / 6) ?  'disabled' : "" ?>"><a class="page-link" 
-        href="?page=gallery&pagination=<?= $pagination + 1 ?><?php echo keepSearch() ?>">Next</a>
-        </li>
-    </ul>
-    </nav>
-</section>
-        </div>
+        </article>
+    <?php endforeach; ?>
+        <nav aria-label="...">
+        <ul class="pagination">
+            <li class="page-item <?= $pagination == 1 ?  'disabled' : "" ?>"><a class="page-link" 
+            href="?page=gallery&pagination=<?= $pagination - 1 ?><?php echo keepSearch() ?>">Previous</a></li>
+            <?php for($i = 1; $i <= ceil($count / 6); $i++) : ?>
+                <li class="page-item <?= $pagination == $i ?  'active" aria-current="page"' : "" ?>"><a class="page-link" 
+                href="?page=gallery&pagination=<?= $i?><?php echo keepSearch() ?>"><?= $i ?></a></li>
+            <?php endfor; ?>
+            <li class="page-item <?= $pagination == ceil($count / 6) ?  'disabled' : "" ?>"><a class="page-link" 
+            href="?page=gallery&pagination=<?= $pagination + 1 ?><?php echo keepSearch() ?>">Next</a>
+            </li>
+        </ul>
+        </nav>
+    </section>
+</div>

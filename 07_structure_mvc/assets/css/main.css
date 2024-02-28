@@ -213,3 +213,16 @@ img.thumbnail{
 	transition:  .5s ease;
 }
 
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+footer {
+    margin-top: auto;
+}
+
+.card-gallery {
+    height: 125px;
+}
