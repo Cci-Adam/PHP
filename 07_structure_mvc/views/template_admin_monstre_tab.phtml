@@ -1,0 +1,41 @@
+<a href="?page=admin_add_monstre" class="btn btn-primary">Ajouter un monstre</a>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Image</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Catégorie</th>
+        <th scope="col">Description</th>
+        <th scope="col">Crée le </th>
+        <th scope="col">Modifié le</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody class="table-group-divider table align-middle table-striped table-warning">
+    <?php foreach($monstres as $monstre) : ?>
+    <tr>
+        <th scope="row"><?php echo $monstre['id'] ?></th>
+        <td><img src="<?php echo $monstre['img'] ?>" alt="" class="thumbnail"></td>
+        <td><?php echo $monstre['nom'] ?></td>
+        <td><?php echo $monstre['categorie'] ?></td>
+        <td><?php echo $monstre['description'] ?></td>
+        <td><?php echo $monstre['created_At'] ?></td>
+        <td><?php echo $monstre['last_Updated'] ?></td>
+        <td>
+            <a href="?page=admin_add_monstre&id=<?php echo $monstre['id'] ?>"><button class="btn btn-primary">Modifier</button></a>
+            <a href="javascript:confirmDelete(<?php echo $monstre['id'] ?>)"><button class="btn btn-danger" >Supprimer</button></a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<script>
+    function confirmDelete(id) {
+        const question = window.confirm("Etes vous sur de vouloir supprimer ce monstre ?");
+        if(question===true) {
+            location.href = "?page=delete&tab=monstre&id=" + id
+        }
+    }
+</script>

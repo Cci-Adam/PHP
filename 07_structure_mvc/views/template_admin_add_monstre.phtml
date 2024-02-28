@@ -1,0 +1,79 @@
+<form class="row g-3 m-3" method="POST" action="?page=admin_add_monstre<?php if(isset($id)) {echo "&id=$id";} ?>" enctype="multipart/form-data">
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Nom</label>
+        <input type="text" class="form-control" id="inputEmail4" name="nom" value="<?= $nom ?>" required>
+    </div>
+    <div class="col-md-3">
+        <label for="imgMonstre" class="form-label">Choisisser une image</label>
+        <input type="file" class="form-control" accept=".png, .jpeg, .jpg, .gif" id="imgMonstre" name="imgMonstre">
+    </div>
+    <div class="col-md-4">
+        <label for="inputState" class="form-label">Categorie</label>
+        <select id="inputState" class="form-select" name="category" required>
+        <option <?php if(empty($category)) {echo "selected";}?>>Choose...</option>
+        <?php foreach($categories as $categorie) : ?> 
+            <option <?php if($category == $categorie) {echo "selected";} ?>> <?=$categorie?> </option> 
+        <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="col-2">
+        <label for="taille_min" class="form-label">Taille minimum</label>
+        <input type="number" class="form-control" id="taille_min" name="taille_min" value="<?= json_decode($taille)[0] ?>" required>
+    </div>
+    <div class="col-2">
+        <label for="taille_max" class="form-label">Taille maximum</label>
+        <input type="number" class="form-control" id="taille_max" name="taille_max" value="<?= json_decode($taille)[1] ?>" required>
+    </div>
+    <div class="col-3">
+        <div>
+            <p> Elements&nbsp;&nbsp;:
+                <?php foreach($els as $el) : ?>
+                    <input class="form-check-input" type="checkbox" id="el<?=$el[0]?>" name="elements[]" value="<?=$el[0]?>" <?php if(in_array($el[0], json_decode($elements))) {echo "checked";} ?>>
+                    <label class="form-check-label" for="el<?=$el[0]?>"> <?= $el[1] ?> </label>
+                <?php endforeach; ?>
+            </p>    
+        </div>
+        <div>
+            <p> Faiblesses :
+                <?php foreach($els as $el) : ?>
+                    <input class="form-check-input" type="checkbox" id="fb<?=$el[0]?>" name="faiblesses[]" value="<?=$el[0]?>" <?php if(in_array($el[0], json_decode($faiblesses))) {echo "checked";} ?>>
+                    <label class="form-check-label" for="fb<?=$el[0]?>"> <?= $el[1] ?> </label>
+                <?php endforeach; ?>
+            </p>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-floating">
+            <textarea class="form-control" id ="short_description" placeholder="Leave a comment here" name="short_description" required><?= $shortDescription ?></textarea>
+            <label for="contactText">Courte description</label>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="form-floating">
+            <select class="form-select" id="inputState" name="generation" required>
+            <option <?php if(empty($generation)) {echo "selected";}?>>Choose...</option>
+            <?php foreach([1,2,3,4,5] as $value) : ?>
+                <option <?php if($generation == $value) {echo "selected";} ?>><?=$value?></option>
+            <?php endforeach; ?>
+            </select>
+            <label for="inputState">Génération</label>
+        </div>
+    </div>
+    <div class="col-10">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="contactText" name="description" required><?= $description ?></textarea>
+            <label for="contactText">Description</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="gridCheck" required>
+        <label class="form-check-label" for="gridCheck">
+            Confirmer
+        </label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </div>
+</form>
