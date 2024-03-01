@@ -12,14 +12,15 @@
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="?page=gallery">Tout</a></li>
             <?php foreach($categories as $categorie) : ?>
-                <li><a class="dropdown-item" href="?page=gallery&category=<?=$categorie?>"><?=$categorie?></a></li> <!-- <?=keepSearch()?> -->
+                <li><a class="dropdown-item" href="?page=gallery&category=<?=$categorie?>"><?=$categorie?></a></li> <!-- <?=keepSearch()?> Si garder la recherche -->
             <?php endforeach; ?>
-            <?php if(isUserConnected()) : ?>
+            <?php if(Utils::isUserConnected()) : ?>
                 <li><a class="dropdown-item" href="?page=gallery&favori=true">Favori</a></li>
             <?php endif; ?>
         </ul>
     </div>
 </div>
+<?php if($count != 0) : ?>
     <section id="galerie" class="row w-100 mx-0">
     <?php foreach($monstres as $monstre) : ?>
         <article class="col-12 col-sm-6 col-md-4 mb-3 w-30 p-2">
@@ -48,4 +49,9 @@
         </ul>
         </nav>
     </section>
+<?php else : ?>
+    <section id="galerie" class="row w-100 mx-0">
+        Aucun Monstre n'a été trouvé !
+    </section>
+<?php endif; ?>
 </div>

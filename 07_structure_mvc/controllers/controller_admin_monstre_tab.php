@@ -1,11 +1,9 @@
 <?php
-verifAdmin();
-$errors = [];
-$exists = false;
-$db = connectDB();
-$query = $db->prepare("SELECT * FROM monstre ");
-$query->execute();
-$monstres = $query->fetchAll(PDO::FETCH_ASSOC);
+Utils::verifAdmin();
+
+require_once('./models/Monstre.php');
+$monstreObj = new Monstre();
+$monstres = $monstreObj->getAll();
 
 
 

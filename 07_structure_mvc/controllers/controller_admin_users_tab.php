@@ -1,11 +1,11 @@
 <?php
-verifAdmin();
+
+Utils::verifAdmin();
 $errors = [];
 $exists = false;
-$db = connectDB();
-$query = $db->prepare("SELECT * FROM user left join user_details on user.id = user_id");
-$query->execute();
-$users = $query->fetchAll(PDO::FETCH_ASSOC);
+require_once('./models/User.php');
+$userObj = new User();
+$users = $userObj->getAll();
 
 
 

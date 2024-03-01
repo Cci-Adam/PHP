@@ -1,38 +1,30 @@
 <?php
-verifAdmin();
+Utils::verifAdmin();
 $id = $_GET['id'];
-$db = connectDB();
+$db = Utils::connectDB();
 $tab = $_GET['tab'];
 if ($tab == 'monstre') {
+    require_once('./models/Monstre.php');
+    $monstreObj = new Monstre();
     // On va supprimer l'image
-    $sql = $db->prepare("SELECT * FROM monstre WHERE id = :id");
-    $sql->bindParam(':id', $id);
-    $sql->execute();
-    $result = $sql->fetch();
-    $pathToDelete = $result['img'];
+    $monstre = $monstreObj->getOne($id);
+    $pathToDelete = $monstre['img'];
     if ($pathToDelete != './assets/mh_img/addMonster.jpg') {
     unlink($pathToDelete);
     }
     // Suppression des commentaires, details et du monstre
-    $query = $db->prepare("DELETE FROM commentaire WHERE monstre_id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
-    $query = $db->prepare("DELETE FROM monstre_details WHERE id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
-    $query = $db->prepare("DELETE FROM monstre WHERE id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
-    
+    $monstreObj->delete($id);
     header('Location: ?page=admin_monstre_tab');
 }
 else if ($tab == 'user') {
-    $query = $db->prepare("DELETE FROM user_details WHERE user_id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
-    $query = $db->prepare("DELETE FROM user WHERE id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
+    require_once('./models/User.php');
+    $userObj = new User();
+    $user = $userObj->getOneByID($id);
+    $pathToDelete = $user['avatar'];
+    if ($pathToDelete != './assets/avatars/default.jpg') {
+        unlink($pathToDelete);
+    }
+    $userObj->delete($id);
     header('Location: ?page=admin_users_tab');
 }
 else if(isset($_GET['commentaire_id']) && $tab == 'commentaire')

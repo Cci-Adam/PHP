@@ -1,0 +1,31 @@
+<?php $monstres = $data['monstres'];
+$x = $data['x'];
+?>
+<h1 class="text-center"><?php echo CONFIG_SITE_TITLE ?></h1>
+<h2 class="text-center">Home</h2>
+<p class="text-center"><?php echo CONFIG_SITE_SLOGAN ?></p>
+
+<div id="carousel" class="carousel slide">
+    <div class="carousel-indicators">
+        <?php foreach($monstres as $monstre) : ?>
+            <button type="button" data-bs-target="#carousel" 
+            data-bs-slide-to="<?php echo $x-1 ?>" <?php echo $monstre['id'] == $monstres[0]['id'] ? 'class="active" aria-current="true" ' : '' ?>
+            aria-label="Slide <?php echo $x; $x++; ?>"></button>
+        <?php endforeach; ?>
+    </div>
+    <div class="carousel-inner">
+        <?php foreach($monstres as $monstre) : ?>
+            <div class="carousel-item <?php echo $monstre['id'] == $monstres[0]['id'] ? 'active' : '' ?>">
+                <img src="<?php echo $monstre['img'] ?>" class="d-block w-100" alt="...">
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

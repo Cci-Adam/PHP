@@ -1,12 +1,10 @@
 <?php 
-verifAdmin();
-
+Utils::verifAdmin();
+require_once('./models/User.php');
+$userObj = new User();
 $id = $_GET['id'];
-$db = connectDB();
-$query = $db->prepare("SELECT * FROM user left join user_details on user.id = user_id WHERE user.id = :id");
-$query->bindParam(':id', $id);
-$query->execute();
-$user = $query->fetch(PDO::FETCH_ASSOC);
+$db = Utils::connectDB();
+$user = $userObj->getOneById($id);
 $username = $user['username'];
 $firstname = $user['firstname'];
 $lastname = $user['lastname'];
@@ -62,23 +60,7 @@ if(isset($_POST['email']) && !empty($_POST['email'])){
 
     if(empty($errors)){
         $roles = json_encode($roles);
-        $sql=$db->prepare("UPDATE user SET email = :email, roles = :roles, username = :username WHERE id = :id");
-        $sql->bindParam(':id', $id);
-        $sql->bindParam(':roles', $roles);
-        $sql->bindParam(':email', $email);
-        $sql->bindParam(':username', $username);
-        $sql->execute();
-        $sql=$db->prepare("UPDATE user_details SET firstname = :firstname, lastname = :lastname, address1 = :address1, address2 = :address2,
-        zip = :zip, city = :city, state = :state WHERE user_id = :id");
-        $sql->bindParam(':id', $id);
-        $sql->bindParam(':firstname', $firstname);
-        $sql->bindParam(':lastname', $lastname);
-        $sql->bindParam(':address1', $address1);
-        $sql->bindParam(':address2', $address2);
-        $sql->bindParam(':zip', $zip);
-        $sql->bindParam(':city', $city);
-        $sql->bindParam(':state', $state);
-        $sql->execute();
+        $userObj->updateAdmin($id, $email, $username, $roles, $firstname, $lastname, $address1, $address2, $zip, $city, $state);
         $success = true;
         header("Location: ?page=admin_users_tab");
     }

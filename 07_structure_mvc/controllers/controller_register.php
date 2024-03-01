@@ -1,9 +1,11 @@
 <?php
 $success=false;
+require_once('./models/User.php');
+$userObj = new User();
 
 if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['email']) && !empty($_POST['password'] && $_POST['password'] === $_POST['confirmPassword'])){
     $errors=[];
-    $extension = getExtension($_FILES['avatar']['name']);
+    $extension = Utils::getExtension($_FILES['avatar']['name']);
     $newFile = "./assets/avatars/".time().$extension;
 
     $email = htmlentities(strip_tags($_POST['email']));
@@ -23,41 +25,20 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['email']
     if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
         $errors[] = "L'email n'est pas valide";
     }
-    if(!extensionAutorisee($extension)){
+    if(!Utils::extensionAutorisee($extension)){
         $errors[] = "Extension non autorisee";
     }
 
-    $db = connectDB();
-    $query = $db->prepare("SELECT * FROM user WHERE email = :email OR username = :username");
-    $query->bindParam(':username', $username);
-    $query->bindParam(':email', $email);
-    $query->execute();
-    $exists = $query->fetchColumn();
+    $exists = $userObj->alreadyExists($email, $username);
 
     if($exists) {
         $errors[] = "Cet user existe déjà";
     }
-    
+    move_uploaded_file($_FILES['avatar']['tmp_name'], $newFile);
     if(empty($errors)){
-        $sql=$db->prepare("INSERT INTO user (email, password, username, avatar) VALUES (:email, :password, :username, :avatar)");
-        $sql->bindParam(':avatar', $newFile);
-        $sql->bindParam(':username', $username);
-        $sql->bindParam(':email', $email);
-        $sql->bindParam(':password', $password);
-        $sql->execute();
-        move_uploaded_file($_FILES['avatar']['tmp_name'], $newFile);
-        $sql=$db->prepare("INSERT INTO user_details (user_id, firstname, lastname, address1, address2, zip, city, state)
-        VALUES (:user_id, :firstname, :lastname, :address1, :address2, :zip, :city, :state)");
-        $user_Id = $db->lastInsertId();
-        $sql->bindParam(':user_id', $user_Id);
-        $sql->bindParam(':firstname', $firstname);
-        $sql->bindParam(':lastname', $lastname);
-        $sql->bindParam(':address1', $address1);
-        $sql->bindParam(':address2', $address2);
-        $sql->bindParam(':zip', $zip);
-        $sql->bindParam(':city', $city);
-        $sql->bindParam(':state', $state);
-        $sql->execute();
+        $ajout = $userObj->add($email, $password, $username, $newFile);
+        $user_Id = $ajout->lastInsertId();
+        $userObj->addDetails($firstname, $lastname, $address1, $address2, $zip, $city, $state, $user_Id);
         $success = true;
     }
 }

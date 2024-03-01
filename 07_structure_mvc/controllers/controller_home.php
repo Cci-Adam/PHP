@@ -1,10 +1,7 @@
 <?php
-$db = connectDB();
-if ($db) {
-    $sql = $db->prepare('SELECT * FROM monstre LIMIT 3');
-    $sql->execute();
-    $monstres= $sql->fetchAll(PDO::FETCH_ASSOC);
-}
-$x  = 1;
+require_once('./models/Monstre.php');
+$monstreObj = new Monstre();
+$monstres = $monstreObj->getAll(5);
+$x  = 1; //Utile
 include "./views/base.phtml";
 ?>

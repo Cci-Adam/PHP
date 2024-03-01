@@ -1,4 +1,6 @@
 <?php
+require_once('./models/User.php');
+$userObj = new User();
     $state =[
         "Auvergne-Rhône-Alpes",
         "Bourgogne-Franche-Comté",
@@ -18,20 +20,18 @@
         "Martinique",
         "Mayotte",
         "Réunion"];
-        $db = connectDB();
-        $id=$_SESSION['user']['id'];
+        if (isset($_SESSION['user']['id'])){
+            $id=$_SESSION['user']['id'];
+        }
         $success = false;
         $profil_id = $_GET['id'];
-        $sql=$db->prepare("SELECT * FROM user join user_details on user.id = user_details.id WHERE user.id = :id");
-        $sql->bindParam(':id', $profil_id);
-        $sql->execute();
-        $user= $sql->fetch(PDO::FETCH_ASSOC);
+        $user = $userObj->getOneByID($profil_id);
 
     if(isset($_POST['email']) && !empty($_POST['email'])){
         $errors=[];
         $email = htmlentities(strip_tags($_POST['email']));
         $exists = false;
-        $extension = getExtension($_FILES['avatar']['name']);
+        $extension = Utils::getExtension($_FILES['avatar']['name']);
         $newFile = "./assets/avatars/".time().$extension;
         
         $username = htmlentities(strip_tags($_POST['username']));
@@ -47,39 +47,16 @@
         if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
             $errors[] = "L'email n'est pas valide";
         }
-        if(!extensionAutorisee($extension)){
+        if(!Utils::extensionAutorisee($extension)){
             $errors[] = "Extension non autorisee";
         }
     
         if(empty($errors)){
-            $sql=$db->prepare("UPDATE user SET email = :email, username = :username, avatar = :avatar, password = :password WHERE id = :id");
-            $sql->bindParam(':id', $id);
-            $sql->bindParam(':password', $password);
-            $sql->bindParam(':avatar', $newFile);
-            $sql->bindParam(':email', $email);
-            $sql->bindParam(':username', $username);
-            $sql->execute();
+            $userObj->update($id, $email, $username, $newFile, $password, $firstname, $lastname, $address1, $address2, $zip, $city, $state);
             $pathToDelete = $_SESSION['user']['avatar'];
-            if ($pathToDelete != './assets/mh_img/addMonster.jpg') {
-                unlink($pathToDelete);
-            }
+            unlink($pathToDelete);
             move_uploaded_file($_FILES['avatar']['tmp_name'], $newFile);
-            $sql=$db->prepare("UPDATE user_details SET firstname = :firstname, lastname = :lastname, address1 = :address1, address2 = :address2,
-            zip = :zip, city = :city, state = :state WHERE user_id = :id");
-            $sql->bindParam(':id', $id);
-            $sql->bindParam(':firstname', $firstname);
-            $sql->bindParam(':lastname', $lastname);
-            $sql->bindParam(':address1', $address1);
-            $sql->bindParam(':address2', $address2);
-            $sql->bindParam(':zip', $zip);
-            $sql->bindParam(':city', $city);
-            $sql->bindParam(':state', $state);
-            $sql->execute();
-            
-            $sql = $db->prepare("SELECT * FROM user join user_details on user.id = user_details.id WHERE email = :email");
-            $sql->bindParam(':email', $email);
-            $sql->execute();
-            $user= $sql->fetch(PDO::FETCH_ASSOC);
+            $user = $userObj->getOneByID($id);
             $_SESSION['user'] = $user;
         }
     }

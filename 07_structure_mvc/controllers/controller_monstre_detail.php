@@ -1,11 +1,17 @@
 <?php
 $id = $_GET['id'];
-$db = connectDB();
-if(isUserConnected()) {
-    $user = getUser($_SESSION['user']['id']);
+$db = Utils::connectDB();
+require_once('./models/User.php');
+require_once('./models/Monstre.php');
+require_once('./models/Commentaire.php');
+$monstreObj = new Monstre();
+$userObj = new User();
+$commentaireObj = new Commentaire();
+
+if(Utils::isUserConnected()) {
+    $user = Utils::getUser($_SESSION['user']['id']);
     $favori = json_decode($user['favori']);
 }
-
 
 $els = [
     ["Feu","🔥"],
@@ -18,24 +24,16 @@ $els = [
 if (isset($_GET['heart']) && $_GET['heart'] === "true") {
     $favori[] = $_GET['id'];
     $favori = json_encode($favori);
-    showGlobals();
-    $sql = $db->prepare("UPDATE user SET favori = :favori WHERE id = :id");
-    $sql->bindParam(':id', $user_id);
-    $sql->bindParam(':favori', $favori);
-    $sql->execute();
+    Utils::showGlobals();
+    $userObj->updateFavori($user_id, $favori);
 }
 if (isset($_GET['heart']) && $_GET['heart'] === "false"){
     $index = array_search($id,$favori);
-    showGlobals();
+    Utils::showGlobals();
     array_splice($favori,$index,1);
     $favori = json_encode($favori);
-    $sql = $db->prepare("UPDATE user SET favori = :favori WHERE id = :id");
-    $sql->bindParam(':id', $user_id);
-    $sql->bindParam(':favori', $favori);
-    $sql->execute();
+    $userObj->updateFavori($user_id, $favori);
 }
-
-
 
 if(isset($_POST['commentaire']) && !empty($_POST['commentaire'])){
     $commentaireToEdit = htmlentities(strip_tags($_POST['commentaire']));
@@ -49,19 +47,11 @@ if(isset($_POST['commentaire']) && !empty($_POST['commentaire'])){
 
 if (isset($_POST['message']) && !empty($_POST['message'])) {
     $message = htmlentities(strip_tags($_POST['message']));
-    $sql = $db->prepare("INSERT INTO commentaire (commentaire, user_id, monstre_id) VALUES (:commentaire, :user_id, :monstre_id)");
-    $sql->bindParam(':commentaire', $message);
-    $sql->bindParam(':user_id', $_SESSION['user']['id']);
-    $sql->bindParam(':monstre_id', $id);
-    $sql->execute();
+    $commentaireObj->add($message, $_SESSION['user']['id'], $id);
 }
-$query = $db->prepare("SELECT * FROM monstre join monstre_details on monstre_details.id = monstre.id WHERE monstre.id = :id");
-$query->bindParam(':id', $id);
-$query->execute();
-$monstre = $query->fetch(PDO::FETCH_ASSOC);
-$query = $db->prepare("SELECT *,commentaire.id as id,user.id as user_id FROM commentaire join user on user.id = commentaire.user_id WHERE monstre_id = :id ORDER BY posted_at ASC");
-$query->bindParam(':id', $id);
-$query->execute();
-$commentaires = $query->fetchAll(PDO::FETCH_ASSOC);
+
+
+$monstre = $monstreObj->getOne($id);
+$commentaires = $commentaireObj->getAll();
 include "./views/base.phtml";
 ?>

@@ -1,0 +1,63 @@
+<?php $monstres = $data['monstres'];
+$categories = $data['categories'];
+$pagination = $data['pagination'];
+$keywords = $data['keywords'];
+$count = $data['count'];
+$user = $data['user'];
+?>
+<div class="w-100">
+<div class="d-flex justify-content-between flex-row-reverse">
+    <div style="width: 110px;"></div>
+    <div>
+    <h2 class="text-center">Gallery</h2>
+    </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categorie
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="?page=gallery">Tout</a></li>
+            <?php foreach($categories as $categorie) : ?>
+                <li><a class="dropdown-item" href="?page=gallery&category=<?=$categorie?>"><?=$categorie?></a></li>
+            <?php endforeach; ?>
+            <?php if(App\Services\Utils::isUserConnected()) : ?>
+                <li><a class="dropdown-item" href="?page=gallery&favori=true">Favori</a></li>
+            <?php endif; ?>
+        </ul>
+    </div>
+</div>
+<?php if($count != 0) : ?>
+    <section id="galerie" class="row w-100 mx-0">
+    <?php foreach($monstres as $monstre) : ?>
+        <article class="col-12 col-sm-6 col-md-4 mb-3 w-30 p-2">
+            <div class="card">
+                <a href="?page=monstre_detail&id=<?= $monstre['id'] ?>">
+                    <img src="<?php echo $monstre['img'] ?>" class="card-img-top" style="height: 500px;" alt="...">
+                </a>
+                <div class="card-body card-gallery">
+                    <h5 class="card-title"><?php echo $monstre['nom'] ?></h5>
+                    <p class="card-text"> <?php echo $monstre['short_description'] ?></p>
+                </div>
+            </div>
+        </article>
+    <?php endforeach; ?>
+        <nav aria-label="...">
+        <ul class="pagination">
+            <li class="page-item <?= $pagination == 1 ?  'disabled' : "" ?>"><a class="page-link" 
+            href="?page=gallery&pagination=<?= $pagination - 1 ?><?php echo $this->keepSearch() ?>">Previous</a></li>
+            <?php for($i = 1; $i <= ceil($count / 6); $i++) : ?>
+                <li class="page-item <?= $pagination == $i ?  'active" aria-current="page"' : "" ?>"><a class="page-link" 
+                href="?page=gallery&pagination=<?= $i?><?php echo $this->keepSearch() ?>"><?= $i ?></a></li>
+            <?php endfor; ?>
+            <li class="page-item <?= $pagination == ceil($count / 6) ?  'disabled' : "" ?>"><a class="page-link" 
+            href="?page=gallery&pagination=<?= $pagination + 1 ?><?php echo $this->keepSearch() ?>">Next</a>
+            </li>
+        </ul>
+        </nav>
+    </section>
+<?php else : ?>
+    <section id="galerie" class="row w-100 mx-0">
+        Aucun Monstre n'a été trouvé !
+    </section>
+<?php endif; ?>
+</div>

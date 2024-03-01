@@ -16,7 +16,7 @@
     <?php foreach($monstres as $monstre) : ?>
     <tr>
         <th scope="row"><?php echo $monstre['id'] ?></th>
-        <td><img src="<?php echo $monstre['img'] ?>" alt="" class="thumbnail"></td>
+        <td><a href="?page=monstre_detail&id=<?php echo $monstre['id'] ?>"><img src="<?php echo $monstre['img'] ?>" alt="" class="thumbnail"></a></td>
         <td><?php echo $monstre['nom'] ?></td>
         <td><?php echo $monstre['categorie'] ?></td>
         <td><?php echo $monstre['description'] ?></td>

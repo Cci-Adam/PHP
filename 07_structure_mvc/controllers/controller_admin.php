@@ -1,4 +1,4 @@
 <?php
-verifAdmin();
+Utils::verifAdmin();
 include "./views/base.phtml";
 ?>

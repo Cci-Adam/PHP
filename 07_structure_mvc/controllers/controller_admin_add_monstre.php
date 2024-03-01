@@ -1,5 +1,8 @@
 <?php
-verifAdmin();
+Utils::verifAdmin();
+require_once('./models/Monstre.php');
+$monstreObj = new Monstre();
+
 $categories = [
 "Herbivore",
 "Lynien",
@@ -32,9 +35,6 @@ function getExtensionExists($file){
     return ".".explode('.', $file)[2];
 }
 
-
-$db=connectDB();
-
 $errors = [];
 $exists = false;
 $nom = "";
@@ -49,10 +49,7 @@ $imgEdit = true;
 
 if (isset($_GET['id'])) {
     $id = htmlentities(strip_tags($_GET['id']));
-    $query = $db->prepare("SELECT * FROM monstre join monstre_details on monstre.id = monstre_details.id WHERE monstre.id = :id");
-    $query->bindParam(':id', $id);
-    $query->execute();
-    $monstre = $query->fetch(PDO::FETCH_ASSOC);
+    $monstre = $monstreObj->getOne($id);
     $nom = $monstre['nom'];
     $category = $monstre['categorie'];
     $description = $monstre['description'];
@@ -67,11 +64,9 @@ if (isset($_GET['id'])) {
 
 }
 
-if (isset($_POST['nom']) && isset($_POST['description']) && isset($_POST['category'])
-    && !empty($_POST['nom']) && !empty($_POST['description']) && !empty($_POST['category'])){
-    var_dump($_FILES);
+if (isset($_POST['nom']) && isset($_POST['description']) && isset($_POST['category']) && !empty($_POST['nom']) && !empty($_POST['description']) && !empty($_POST['category'])){
     if(isset($_FILES['imgMonstre']) && !empty($_FILES['imgMonstre']['name'])) {
-        $extension = getExtension($_FILES['imgMonstre']['name']);
+        $extension = Utils::getExtension($_FILES['imgMonstre']['name']);
         $newFile = "./assets/mh_img/".time().$extension;
         $imgEdit = true;
     }
@@ -109,15 +104,12 @@ if (isset($_POST['nom']) && isset($_POST['description']) && isset($_POST['catego
     if ($exists) {
         $errors[] = "Cet monstre existe déjà";
     }
-    if(!extensionAutorisee($extension)){
+    if(!Utils::extensionAutorisee($extension)){
         $errors[] = "Extension non autorisee";
     }
     if(empty($errors)) {
         if(isset($_GET['id'])){
-            $sql = $db->prepare("SELECT * FROM monstre WHERE id = :id");
-            $sql->bindParam(':id', $id);
-            $sql->execute();
-            $result = $sql->fetch();
+            $result = $monstreObj->getOne($id);
             $pathToDelete = $result['img'];
             if($imgEdit && $monstre['img'] != "./assets/mh_img/addMonster.jpg") {
             unlink($pathToDelete);
@@ -146,6 +138,7 @@ if (isset($_POST['nom']) && isset($_POST['description']) && isset($_POST['catego
             header('Location: ?page=admin_monstre_tab');
         }
         else{
+            
             $sql = $db->prepare("INSERT INTO monstre (nom, short_description, description, img, categorie) VALUES (:nom, :short_description,:description, :img, :category)");
             $sql->bindParam(':nom', $nom);
             $sql->bindParam(':short_description', $shortDescription);

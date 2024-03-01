@@ -3,10 +3,10 @@ $success=false;
 if(isset($_POST['sujet']) && isset($_POST['message']) && !empty($_POST['sujet']) && !empty($_POST['message'])){
     $errors=[];
     
-    $db = connectDB();
+    $db = Utils::connectDB();
     $sujet = htmlentities(strip_tags($_POST['sujet']));
     $message = htmlentities(strip_tags($_POST['message']));
-    if (!isUserConnected()) {
+    if (!Utils::isUserConnected()) {
         $errors[] = "Veuillez vous connecter";
     }
     if(empty($errors)){
