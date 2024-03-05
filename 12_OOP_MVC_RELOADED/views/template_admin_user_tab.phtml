@@ -1,0 +1,36 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Prénom</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Email</th>
+        <th scope="col">Inscrit le</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach($users as $user) : ?>
+    <tr>
+        <th scope="row"><?php echo $user['id'] ?></th>
+        <td><?php echo $user['firstname'] ?></td>
+        <td><?php echo $user['lastname'] ?></td>
+        <td><?php echo $user['email'] ?></td>
+        <td><?php echo $user['register_at'] ?></td>
+        <td>
+            <a href="?page=adminuseredit&id=<?php echo $user['id'] ?>"><button class="btn btn-primary">Modifier</button></a>
+            <a href="javascript:confirmDelete(<?php echo $user['id'] ?>)"><button class="btn btn-danger" >Supprimer</button></a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<script>
+    function confirmDelete(id) {
+        const question = window.confirm("Etes vous sur de vouloir supprimer ce monstre ?");
+        if(question===true) {
+            location.href = "?page=delete&tab=user&id=" + id
+        }
+    }
+</script>

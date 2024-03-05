@@ -1,0 +1,108 @@
+<?php
+$user = $data['user'];
+$state = $data['state'];
+?>
+<form class="row g-3 p-3" action="?page=profil&id=<?= $user['id']; ?>" method="POST" enctype="multipart/form-data">
+    <div class="col-md-6">
+        <label for="inputNom" class="form-label">Firstname</label>
+        <input type="text" value="<?= $user['firstname']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?>
+        id="inputNom" name="firstname" required>
+    </div>
+    <div class="col-md-6">
+        <label for="inputPrenom" class="form-label">Lastname</label>
+        <input type="text" value="<?= $user['lastname']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputPrenom" name="lastname" required>
+    </div>
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email</label>
+        <input type="email" value="<?= $user['email']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputEmail4" name="email" required>
+    </div>
+    <?php if(isset($_POST['edit']) && $_POST['edit']=='true') :?>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Password</label>
+        <input type="password" 
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputPassword4" name="password" required>
+    </div>
+    <?php endif; ?>
+    <div class="col-md-6">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" value="<?= $user['username']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="username" name="username" required>
+    </div>
+    <!--
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Confirm Password</label>
+        <input type="password" 
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputPassword4" name="confirmPassword" required>
+    </div>
+    -->
+    <div class="col-12">
+        <label for="inputAddress" class="form-label">Address</label>
+        <input type="text" value="<?= $user['address1']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputAddress" placeholder="1234 Main St" name="address1">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress2" class="form-label">Address 2</label>
+        <input type="text" value="<?= $user['address2']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?> 
+        id="inputAddress2" placeholder="Apartment, studio, or floor" name="address2">
+    </div>
+    <div class="col-md-6">
+        <label for="inputCity" class="form-label">City</label>
+        <input type="text" value="<?= $user['city']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?>
+        id="inputCity" name="city">
+    </div>
+    <div class="col-md-4">
+        <label for="inputState" class="form-label">State</label>
+        <?php if(isset($_POST['edit']) && $_POST['edit']=='true') :?>
+        <select id="inputState" class="form-select" name="state">
+        <?php foreach($state as $s) :?>
+            <option <?php if($user['state'] == $s) {echo "selected";} ?>><?= $s ?></option>
+        <?php endforeach; ?>
+        </select>
+        <?php else :?>
+            <p> <?= $user['state']; ?></p>
+        <?php endif; ?>
+    </div>
+    <div class="col-md-2">
+        <label for="inputZip" class="form-label">Zip</label>
+        <input type="text" value="<?= $user['zip']; ?>"
+        <?= isset($_POST['edit']) && $_POST['edit']=='true' ? 'class="form-control"' : 'readonly class="form-control-plaintext"'; ?>
+        id="inputZip" name="zip">
+    </div>
+    <?php if(isset($_POST['edit']) && $_POST['edit']=='true') :?>
+    <div class="col-3">
+        <input type="file" id="inputZip" name="avatar" required>
+    </div>
+    
+    <div class="col-12">
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="gridCheck" name="check" required>
+        <label class="form-check-label" for="gridCheck">
+            Check me out
+        </label>
+        </div>
+    </div>
+    <button type="submit" name="edit" value="false" class="btn btn-primary">Confirmer</button>
+    <?php endif; ?>
+</form>
+<?php if (isset($_SESSION['user']['id']) && ($_SESSION['user']['id'] == $_GET['id'])) : ?>
+    <form class="row g-3 p-3" action="?page=profil&id=<?= $_SESSION['user']['id']; ?>" method="POST">
+        <div class="col-12">
+        <?php if(isset($_POST['edit']) && $_POST['edit']=='true') :?>
+            <button type="submit" name="edit" value="false" class="btn btn-danger">Cancel</button>
+        <?php else: ?>
+            <button type="submit" name="edit" value="true" class="btn btn-primary">Edit</button>
+        <?php endif; ?>
+        </div>
+    </form>
+<?php endif; ?>

@@ -1,0 +1,47 @@
+<?php
+$errors = $data['errors'];
+$success = $data['success'];
+?>
+<section id="contact" class="p-3">
+    <?php if (isset($errors) && !empty($errors)) : ?> 
+    <?php foreach($errors as $error):  ?>
+        <div class="alert alert-danger" role="alert">
+        <?php echo $error; ?>
+        </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
+    <h1>Contact</h1>
+    <?php if (!$success) : ?>
+    <form class="row g-3" action="?page=contact" method="POST">
+        <div class="col-md-6">
+            <label for="sujet" class="form-label">Sujet :</label>
+            <input type="text" class="form-control" id="sujet" name="sujet" required>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="contactText" name="message"></textarea>
+                <label for="floatingTextarea2">Comments</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck" name="check" required>
+            <label class="form-check-label" for="gridCheck">
+                Confirmer
+            </label>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </form>
+    <?php else: ?>
+        <div class="alert alert-success" role="alert">
+        <p> Votre message à bien été envoyé. </p>
+        <p> Merci de nous avoir contacté. </p>
+        </div>
+    <?php endif; ?>
+    
+    
+</section>
+

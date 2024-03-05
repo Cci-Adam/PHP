@@ -18,4 +18,8 @@ class Commentaire{
         $this->db->query("INSERT INTO commentaire (commentaire, user_id, monstre_id) VALUES (:commentaire, :user_id, :monstre_id)",
         ["commentaire"=>$commentaire, "user_id"=>$user_id, "monstre_id"=>$monstre_id]);
     }
+
+    public function delete($id){
+        $this->db->query("DELETE FROM commentaire WHERE id = :id", ["id"=>$id]);
+    }
 }
