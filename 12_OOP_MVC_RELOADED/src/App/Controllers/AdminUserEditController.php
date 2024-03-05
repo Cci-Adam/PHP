@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
-use App\Models\User;
+use App\Models\UserManager;
+use App\Models\UserDetailsManager;
 use App\Services\Utils;
 use App\Controllers\Controller;
 
@@ -10,8 +11,10 @@ class AdminUserEditController extends Controller
     {
         $utilsObj = new Utils();
         $utilsObj->verifAdmin();
-        $userObj = new User();
-        $user = $userObj->getOneById($_GET['id']);
+        $userObj = new UserManager();
+        $id = $_GET['id'];
+        $user = $userObj->getOneById(null,"SELECT *,user.id as id FROM user join user_details on user.id = user_details.user_id WHERE user.id = $id");
+        var_dump($user);
         $errors = [];
         $state =[
             "Auvergne-Rhône-Alpes",
@@ -35,8 +38,6 @@ class AdminUserEditController extends Controller
             if(isset($_POST['email']) && !empty($_POST['email'])){
                 $errors=[];
                 $email = htmlentities(strip_tags($_POST['email']));
-                $exists = false;
-                $id = $_GET['id'];
                 $username = htmlentities(strip_tags($_POST['username']));
                 $firstname = htmlentities(strip_tags($_POST['firstname']));
                 $lastname = htmlentities(strip_tags($_POST['lastname']));
@@ -58,7 +59,9 @@ class AdminUserEditController extends Controller
             
                 if(empty($errors)){
                     $roles = json_encode($roles);
-                    $userObj->updateAdmin($id, $email, $username, $roles, $firstname, $lastname, $address1, $address2, $zip, $city, $state);
+                    $userObj->update("UPDATE user SET username = '$username', email = '$email', roles = '$roles' WHERE id = '$id'");
+                    $userDetailsObj = new UserDetailsManager();
+                    $userDetailsObj->update("UPDATE user_details SET firstname = '$firstname', lastname = '$lastname', address1 = '$address1', address2 = '$address2', zip = '$zip', city = '$city', state = '$state' WHERE user_id = '$id'");
                     $success = true;
                     header("Location: ?page=adminusertab");
                 }

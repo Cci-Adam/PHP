@@ -1,14 +1,11 @@
 <?php
 namespace App\Controllers;
+use App\Services\Authenticator;
 class LogoutController
 {
     public function index()
     {
-        unset($_SESSION['user']);
-        session_destroy();
-        $prevPage = $_SERVER['HTTP_REFERER'];
-        $prevPage = explode("?", $prevPage);
-        $prevPage = '?'.$prevPage[1];
-        header('Location: ./'.$prevPage);
+        $authenticator = new Authenticator();
+        $authenticator->logout();
     }
 }

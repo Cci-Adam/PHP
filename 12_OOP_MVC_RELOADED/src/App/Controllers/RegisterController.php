@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
-use App\Models\User;
+use App\Models\UserManager;
+use App\Models\UserDetailsManager;
 use App\Services\Utils;
 use App\Controllers\Controller;
 
@@ -9,7 +10,7 @@ class RegisterController extends Controller
     public function index()
     {
         $template = './views/template_register.phtml';
-        $userObj = new User();
+        $userObj = new UserManager();
         $utilsObj = new Utils();
         $success = false;
         $errors = [];
@@ -34,7 +35,6 @@ class RegisterController extends Controller
             "Réunion"];
             
         if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['email']) && !empty($_POST['password'] && $_POST['password'] === $_POST['confirmPassword'])){
-            $errors=[];
             $extension = $utilsObj->getExtension($_FILES['avatar']['name']);
             $newFile = "./assets/avatars/".time().$extension;
 
@@ -58,17 +58,20 @@ class RegisterController extends Controller
             if(!Utils::extensionAutorisee($extension)){
                 $errors[] = "Extension non autorisee";
             }
-
-            $exists = $userObj->alreadyExists($email, $username);
-
+            $exists = $userObj->getOneById(null,"SELECT * FROM user WHERE email = '$email' or username = '$username'");
             if($exists) {
                 $errors[] = "Cet user existe déjà";
             }
             move_uploaded_file($_FILES['avatar']['tmp_name'], $newFile);
             if(empty($errors)){
-                $ajout = $userObj->add($email, $password, $username, $newFile);
+                $userObj = new UserManager();
+                $ajout = $userObj->insert([$username, $email, $password, $newFile]);
+
                 $user_Id = $ajout->lastInsertId();
-                $userObj->addDetails($firstname, $lastname, $address1, $address2, $zip, $city, $state, $user_Id);
+
+
+                $userDetailsObj = new UserDetailsManager();
+                $userDetailsObj->insert([$user_Id,$firstname, $lastname, $address1, $address2, $zip, $city, $state]);
                 $success = true;
             }
         }

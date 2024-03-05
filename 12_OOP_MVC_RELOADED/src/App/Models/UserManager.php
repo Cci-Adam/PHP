@@ -12,4 +12,12 @@ class UserManager extends AbstractManager
         self::$tableName = "user";
         self::$obj = new User();
     }
+
+    public function getUserByLogin ($email = null): array|false
+    {
+        $where = !is_null($email) ? "WHERE email = ? OR username = ?" : "";
+        $row = [];
+        $row = self::$db->select("SELECT *,user.id as id FROM ".self::$tableName." JOIN user_details on user.id = user_id ".$where." LIMIT 1",[$email,$email]);
+        return $row;
+    }
 }

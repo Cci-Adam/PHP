@@ -3,14 +3,14 @@ namespace App\Models;
 use App\Models\AbstractTable;
 
 class UserDetails extends AbstractTable{
-    private ?int $user_id = null;
-    private ?string $firstname = null;
-    private ?string $lastname = null;
-    private ?string $address1 = null;
-    private ?string $address2 = null;
-    private ?string $zip = null;
-    private ?string $city = null;
-    private ?string $state = null;
+    protected ?int $user_id = null;
+    protected ?string $firstname = null;
+    protected ?string $lastname = null;
+    protected ?string $address1 = null;
+    protected ?string $address2 = null;
+    protected ?string $zip = null;
+    protected ?string $city = null;
+    protected ?string $state = null;
 
     public function setUser_id(?int $user_id){
         $this->user_id = $user_id;

@@ -4,11 +4,15 @@ use App\Models\AbstractTable;
 
 class MonstreDetails extends AbstractTable
 {
+    protected ?int $monstre_id = null;
     protected ?array $elements = null;
     protected ?array $faiblesses = null;
     protected ?array $taille = null;
     protected ?int $generation = null;
 
+    public function setMonstre_id(?int $monstre_id){
+        $this->monstre_id = $monstre_id;
+    }
     public function setElements(?array $elements){
         $this->elements = $elements;
     }
@@ -27,6 +31,7 @@ class MonstreDetails extends AbstractTable
 
     public function toArray(){
         $monstreDetailsArray = [
+            $this->monstre_id,
             $this->elements,
             $this->faiblesses,
             $this->taille,

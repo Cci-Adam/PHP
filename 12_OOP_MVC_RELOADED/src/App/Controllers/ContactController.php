@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-use App\Models\Contact;
+use App\Models\ContactManager;
 use App\Services\Utils;
 use App\Controllers\Controller;
 
@@ -10,7 +10,7 @@ class ContactController extends Controller
     public function index()
     {
         $utilsObj = new Utils();
-        $contactObj = new Contact();
+        $contactObj = new ContactManager();
         $template = './views/template_contact.phtml';
         $success=false;
         $errors=[];
@@ -22,7 +22,7 @@ class ContactController extends Controller
             }
             if(empty($errors)){
                 $user_Id = $_SESSION['user']['id'];
-                $contactObj->add($user_Id,$sujet,$message);
+                $contactObj->insert([$user_Id,$sujet,$message]);
                 $success = true;
             }
         }

@@ -6,9 +6,9 @@ class User extends AbstractTable{
     protected ?string $username = null;
     protected ?string $email = null;
     protected ?string $password = null;
-    protected ?array $roles = null;
+    private ?array $roles = null;
     protected ?string $avatar = null;
-    protected ?array $favori = null;
+    private ?array $favori = null;
     private ?string $register_at = null;
 
     public function setUsername (?string $username){

@@ -1,21 +1,19 @@
 <?php
 namespace App\Controllers;
-use App\Models\User;
+use App\Services\Authenticator;
 class LoginController{
     public function index(){
         
-        $userObj = new User();
         if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['email']) && !empty($_POST['password'])){
             $errors=[];
             $email = htmlentities(strip_tags($_POST['email']));
             $password = htmlentities(strip_tags($_POST['password']));
-            $user = $userObj->getOneByLogin($email);
+            $auth = new Authenticator();
             $prevPage = $_SERVER['HTTP_REFERER'];
             $prevPage = explode("?", $prevPage);
             $prevPage = '?'.$prevPage[1];
             var_dump($prevPage);
-            if(is_array($user) && password_verify($password,$user['password'])){
-                $_SESSION['user'] = $user;
+            if($auth->login($email,$password)){
             }
             else{
                 $errors[]="Mot de passe ou email invalide";

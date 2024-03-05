@@ -2,9 +2,6 @@
 namespace App\Services;
 use App\Models\UserManager;
 class Utils{
-    static function isRole($role) {
-        return isset($_SESSION['user']) && in_array($role, json_decode($_SESSION['user']['roles']));
-    }
     
     static function verifAdmin() {
         if (!isset($_SESSION['user']['roles']) || !in_array('ROLE_ADMIN', json_decode($_SESSION['user']['roles']))) {
@@ -36,7 +33,7 @@ class Utils{
     }
     static function getUser($id){
         $userObj = new UserManager();
-        $user = $userObj->getOneById($id);
+        $user = $userObj->getOneById(null,"SELECT *, user_details.id as user_details_id FROM user join user_details on user.id = user_details.user_id WHERE user.id = $id");
         return $user;
     }
 }

@@ -4,7 +4,7 @@ use App\Models\UserDetails;
 use App\Services\Database;
 use App\Models\AbstractManager;
 
-class MonstreDetailsManager extends AbstractManager
+class UserDetailsManager extends AbstractManager
 {
     public function __construct()
     {

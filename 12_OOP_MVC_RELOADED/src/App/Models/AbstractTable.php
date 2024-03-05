@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-
+use App\Services\Dataase;
 abstract class AbstractTable
 {
     protected ?int $id = null;
@@ -28,8 +28,8 @@ abstract class AbstractTable
         $filter = ['id', 'className'];
         $class = get_class_vars($this->getClassName());
         foreach ($class as $key => $value) {
-            if (!in_array($key, $filter)) $attributes[$key] = $value;{
-                $attributes[$key] = $value;
+            if (!in_array($key, $filter)){
+                $attributes[] = $key;
             }
         }
         return $attributes;

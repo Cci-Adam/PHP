@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 use App\Models\MonstreManager;
+use App\Models\MonstreDetailsManager;
 use App\Services\Utils;
 use App\Controllers\Controller;
 
@@ -41,7 +42,7 @@ class AdminAddMonstreController extends Controller {
             $monstre = ['elements'=>'[]', 'faiblesses'=>'[]', 'categorie'=>'', 'generation'=>''];
             if (isset($_GET['id'])) {
                 $id = htmlentities(strip_tags($_GET['id']));
-                $monstre = $monstreObj->getOneById($id);
+                $monstre = $monstreObj->getOneById(null, "SELECT * FROM monstre join monstre_details on monstre.id = monstre_details.monstre_id WHERE monstre.id = $id");
                 $extension = $this->getExtensionExists($monstre['img']);
                 $newFile = $monstre['img'];
                 $imgEdit = false;
@@ -78,7 +79,6 @@ class AdminAddMonstreController extends Controller {
                         $faiblesses[] = $faiblesse;
                     }
                 }
-                var_dump($_GET['id']);
                 if(!isset($_GET['id'])){
                     $exists = $monstreObj->getOneById(null,"SELECT * FROM monstre WHERE nom = '$nom'");
                 }
@@ -99,14 +99,18 @@ class AdminAddMonstreController extends Controller {
                         if($imgEdit && $monstre['img'] != "./assets/mh_img/addMonster.jpg") {
                             unlink($pathToDelete);
                         };
-                        $monstreObj->update($id, $nom, $shortDescription, $description, $newFile, $category, $taille, $elements, $faiblesses, $generation);
+                        $date = date('Y-m-d H:i:s');
+                        $monstreObj->update("UPDATE monstre SET nom = '$nom', categorie = '$category', short_description = '$shortDescription', description = '$description', img = '$newFile', updated_at = '$date' WHERE id = $id");
+                        $monstreDetailsObj = new MonstreDetailsManager();
+                        $monstreDetailsObj->update("UPDATE monstre_details SET elements = '$elements', faiblesses = '$faiblesses', taille = '$taille', generation = '$generation' WHERE monstre_id = $id");
                         move_uploaded_file($_FILES['imgMonstre']['tmp_name'],$newFile);
                         header('Location: ?page=adminmonstretab');
                     }
                     else{
-                        $ajout = $monstreObj->add($nom, $shortDescription, $description, $newFile, $category);
+                        $ajout = $monstreObj->insert([$nom, $category, $shortDescription, $description, $newFile, date('Y-m-d H:i:s')]);
                         $monstre_id = $ajout->lastInsertId();
-                        $monstreObj->addDetails($monstre_id, $taille, $elements, $faiblesses, $generation);
+                        $monstreDetailsObj = new MonstreDetailsManager();
+                        $monstreDetailsObj->insert([$monstre_id, $elements ,$faiblesses ,$taille , $generation]);
                         move_uploaded_file($_FILES['imgMonstre']['tmp_name'],$newFile);
                         header('Location: ?page=adminmonstretab');
                     }

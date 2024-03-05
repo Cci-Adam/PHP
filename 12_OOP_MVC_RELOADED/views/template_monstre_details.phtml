@@ -60,7 +60,7 @@
             Reviews
         </button>
         </li>
-        <?php if(App\Services\Utils::isRole('ROLE_MEMBER')) : ?>
+        <?php if(App\Services\Authenticator::isRole('ROLE_MEMBER')) : ?>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="ajout-tab" data-bs-toggle="tab" data-bs-target="#ajout" type="button" role="tab" aria-controls="ajout" aria-selected="false">
                 Ajouter un commentaire
@@ -97,7 +97,7 @@
                         </div>
                         <div class="w-100">
                             <h5>@<?= $commentaire['username'] ?></h5>
-                            <?php if(isset($_GET['commentaire_id']) && $_GET['commentaire_id'] == $commentaire['id'] && App\Services\Utils::isUserConnected() && (App\Services\Utils::isRole('ROLE_ADMIN') || $commentaire['user_id'] == $_SESSION['user']['id'])) : ?>
+                            <?php if(isset($_GET['commentaire_id']) && $_GET['commentaire_id'] == $commentaire['id'] && App\Services\Utils::isUserConnected() && (App\Services\Authenticator::isRole('ROLE_ADMIN') || $commentaire['user_id'] == $_SESSION['user']['id'])) : ?>
                             <form action="?page=monstredetails&id=<?= $monstre['id'] ?>&commentaire_id=<?= $commentaire['id'] ?>" method="POST">
                                 <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="4" placeholder="Ajouter un commentaire" required><?= $commentaire['commentaire'] ?></textarea>
                                 <button type="submit" class="btn btn-primary">Valider</button>

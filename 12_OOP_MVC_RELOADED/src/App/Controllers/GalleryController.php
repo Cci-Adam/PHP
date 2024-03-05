@@ -51,7 +51,7 @@ class GalleryController extends Controller
             }
         }
         else {
-            $monstres = $monstreObj->getAll();
+            $monstres = $monstreObj->getAll(null,"SELECT * FROM monstre WHERE nom LIKE '%$keywords%'");
         }
         $count = count($monstres);
         $monstres = array_slice($monstres, $offset, 6);

@@ -1,17 +1,19 @@
 <?php
 namespace App\Controllers;
-use App\Models\User;
+use App\Models\UserManager;
+use App\Models\UserDetailsManager;
 use App\Services\Utils;
 use App\Controllers\Controller;
 
 class ProfilController extends Controller{
     public function index(){
         $utilsObj = new Utils();
-        $userObj = new User();
+        $userObj = new UserManager();
+        $id = $_GET['id'];
         if(isset($_SESSION['user'])){
-            $id = $_SESSION['user']['id'];
+            $user_id = $_SESSION['user']['id'];
         }
-        $user = $userObj->getOneById($_GET['id']);
+        $user = $userObj->getOneById(null,"SELECT *, user.id as id FROM user join user_details on user.id = user_details.user_id WHERE user.id = $id");
         $state =[
             "Auvergne-Rhône-Alpes",
             "Bourgogne-Franche-Comté",
@@ -55,11 +57,16 @@ class ProfilController extends Controller{
                 }
             
                 if(empty($errors)){
-                    $userObj->update($id, $email, $username, $newFile, $password, $firstname, $lastname, $address1, $address2, $zip, $city, $state);
+                    $userObj = new UserManager();
+                    // $userObj->update("$id, [$username, $email, $password, $newFile ]"); //,$firstname, $lastname, $address1, $address2, $zip, $city, $state
+                    $userObj->update("UPDATE user SET username = ?, email = ?, password = ?, avatar = ? WHERE id = ?",[$username, $email, $password, $newFile, $id]);
+                    $userDetailsObj = new UserDetailsManager();
+                    //$userDetailsObj->update($id, [$id, $firstname, $lastname, $address1, $address2, $zip, $city, $state]);
+                    $userDetailsObj->update("UPDATE user_details SET firstname = ?, lastname = ?, address1 = ?, address2 = ?, zip = ?, city = ?, state = ? WHERE user_id = ?",[$firstname, $lastname, $address1, $address2, $zip, $city, $state, $id]);
                     $pathToDelete = $_SESSION['user']['avatar'];
                     unlink($pathToDelete);
                     move_uploaded_file($_FILES['avatar']['tmp_name'], $newFile);
-                    $user = $userObj->getOneByID($id);
+                    $user = $userObj->getOneById(null,"SELECT *, user.id as id FROM user join user_details on user.id = user_details.user_id WHERE user.id = $id");
                     $_SESSION['user'] = $user;
                 }
             }
