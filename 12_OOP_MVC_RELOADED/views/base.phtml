@@ -13,13 +13,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title><?php echo CONFIG_SITE_TITLE; ?></title>
     <link rel="stylesheet" href="./assets/css/main.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-    $(document).ready(function() {
-        <?php if(!empty($err_login)) : ?>
-            $("#user-login").modal('show');
-        <?php endif; ?>
-    })
+        
 </script>
 </head>
 <body class="">
@@ -73,21 +68,55 @@
         </nav>
     </header>
     <main class='w-100'>
-    <?php include "./views/modals/modal_login.php"; ?>
     <?= $template; ?>
     </main>
-    <footer>
-    <article class="color-quaternary text-light mb-0">
-        <h1>How to be a wizard</h1>
-        <ol>
-            <li>Grow a long, majestic beard.</li>
-            <li>Wear a tall, pointed hat.</li>
-            <li>Have I mentioned the beard?</li>
-        </ol>
-            <p class="mb-0">© 2018 Gandalf</p>
-        </footer>
-    </article>
+    <?php include "./views/modals/modal_login.php"; ?>
+    <div class="modal" tabindex="-1" id="modalCookie">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal Cookie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Acceptez-vous les cookies ?</p>
+                </div>
+                <div class="modal-footer">
+                    <form method="POST">
+                        <button type="submit" name="cookie_no" class="btn btn-danger">Non, je suis qu'une merde !</button>
+                        <button type="submit" name="cookie_yes" class="btn btn-success">Oui, je suis beau gosse !</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <footer>
+        <article class="color-quaternary text-light mb-0">
+            <h1>How to be a wizard</h1>
+            <ol>
+                <li>Grow a long, majestic beard.</li>
+                <li>Wear a tall, pointed hat.</li>
+                <li>Have I mentioned the beard?</li>
+            </ol>
+            <?php if (isset($_SESSION['cookie'])) : ?>
+            <a href="javascript:modalCookieShow()"><button class="btn btn-warning">Cookies</button></a>
+            <?php endif; ?>
+            <p class="mb-0">© 2018 Gandalf</p>
+        </article>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const modalCookie = new bootstrap.Modal(document.getElementById('modalCookie'));
+        <?php if(!isset($_SESSION['cookie'])) echo "modalCookie.show();" ?>
+        function modalCookieShow(){
+            modalCookie.show();
+        }
+        
+        const modalLogin = new bootstrap.Modal(document.getElementById('user-login'));
+        <?php if(!empty($err_login)) : ?>
+            modalLogin.show();
+        <?php endif; ?>
+    </script>
 </body>
 </html>

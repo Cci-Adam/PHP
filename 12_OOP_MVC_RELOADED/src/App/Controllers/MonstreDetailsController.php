@@ -30,7 +30,7 @@ class MonstreDetailsController extends Controller{
         $monstre = $monstreObj->getOneById(null,"SELECT *,monstre.id as id,monstre_details.id as monstre_details_id FROM monstre JOIN monstre_details on monstre.id = monstre_id WHERE monstre.id = $id");
         $commentaires = $commentaireObj->getAll(null, "SELECT *,commentaire.id as id,user.id as user_id FROM commentaire join user on user.id = commentaire.user_id WHERE monstre_id = $id ORDER BY posted_at DESC");
         $template = './views/template_monstre_details.phtml';
-        $this->render($template, ['monstre' => $monstre, 'commentaires' => $commentaires, 'els' => $els, 'favori' => $favori, 'id' => $id]);        
+        $this->render($template, ['monstre' => $monstre, 'commentaires' => $commentaires, 'els' => $els, 'favori' => $favori, 'id' => $id]);
     }
 
     public function Commentaire(){

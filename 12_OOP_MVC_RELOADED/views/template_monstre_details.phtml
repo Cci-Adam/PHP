@@ -129,6 +129,7 @@
     </div>
     </aside>
 </section>
+
 <script>
     function addFavourite(){
         const heart = document.getElementById('heart');
@@ -136,24 +137,12 @@
         if(heart.checked === true){
             const xhr = new XMLHttpRequest();
             xhr.open("GET", "?page=monstredetails&action=Favori&id=" + <?= $monstre['id'] ?> + "&heart=true", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    // Code to handle the response goes here
-                }
-            };
             xhr.send();
             console.log(xhr)
         }
         else{
             const xhr = new XMLHttpRequest();
             xhr.open("GET", "?page=monstredetails&action=Favori&id=" + <?= $monstre['id'] ?> + "&heart=false", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    // Code to handle the response goes here
-                }
-            };
             xhr.send();
             console.log(xhr)
         }

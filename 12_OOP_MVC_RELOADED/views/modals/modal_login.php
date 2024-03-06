@@ -23,10 +23,12 @@
                                 <label for="exampleInputPassword1" class="form-label">Password :</label>
                                 <input type="password" class="form-control" id="exampleInputPassword1" name="password">
                             </div>
+                            <?php if(isset($_SESSION['cookie']) && ((bool)$_SESSION['cookie'])===true) : ?>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
                                 <label class="form-check-label" for="remember_me">Remember Me</label>
                             </div>
+                            <?php endif; ?>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                         <p> Pas de compte ? <a href="?page=register">Inscrivez-vous !</a></p>

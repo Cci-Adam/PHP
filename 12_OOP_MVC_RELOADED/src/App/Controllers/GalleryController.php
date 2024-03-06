@@ -54,9 +54,23 @@ class GalleryController extends Controller
             $monstres = $monstreObj->getAll(null,"SELECT * FROM monstre WHERE nom LIKE '%$keywords%'");
         }
         $count = count($monstres);
+        if(isset($_GET['q'])) {
+            $monstres = $this->search();
+        }
         $monstres = array_slice($monstres, $offset, 6);
         $this->render($template,["monstres"=>$monstres,"categories"=>$categories,"pagination"=>$pagination,"keywords"=>$keywords,"category"=>$category,"count"=>$count,"user"=>$user]);
     }
+
+    public function search(){
+        $keywords = $_GET['q'];
+        $monstreObj = new MonstreManager();
+        $monstres = $monstreObj->getAll(null,"SELECT * FROM monstre WHERE nom LIKE '%$keywords%'");
+        foreach($monstres as $key => $monstre) {
+            echo "<a href= ?page=monstredetails&id=" . $monstre['id'] . ">" . $monstre['nom'] . "</a><br>";
+        }
+        return $monstres;
+    }
+    
     function keepSearch() {
         if (isset($_GET['keywords'])) {
             return "&keywords=".$_GET['keywords'];
