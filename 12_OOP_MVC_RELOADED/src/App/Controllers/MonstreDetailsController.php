@@ -28,18 +28,14 @@ class MonstreDetailsController extends Controller{
             ["Dragon","🐉"]
         ];
         $monstre = $monstreObj->getOneById(null,"SELECT *,monstre.id as id,monstre_details.id as monstre_details_id FROM monstre JOIN monstre_details on monstre.id = monstre_id WHERE monstre.id = $id");
-        if (isset($_GET['heart']) && $_GET['heart'] === "true") {
-            $favori[] = $_GET['id'];
-            $favori = json_encode($favori);
-            $userObj->update("UPDATE user SET favori = '$favori' WHERE id = '$user_id'");
-        }
-        if (isset($_GET['heart']) && $_GET['heart'] === "false"){
-            $index = array_search($id,$favori);
-            array_splice($favori,$index,1);
-            $favori = json_encode($favori);
-            $userObj->update("UPDATE user SET favori = '$favori' WHERE id = '$user_id'");
-        }
-        
+        $commentaires = $commentaireObj->getAll(null, "SELECT *,commentaire.id as id,user.id as user_id FROM commentaire join user on user.id = commentaire.user_id WHERE monstre_id = $id ORDER BY posted_at DESC");
+        $template = './views/template_monstre_details.phtml';
+        $this->render($template, ['monstre' => $monstre, 'commentaires' => $commentaires, 'els' => $els, 'favori' => $favori, 'id' => $id]);        
+    }
+
+    public function Commentaire(){
+        $commentaireObj = new CommentaireManager();
+        $id = $_GET['id'];
         if(isset($_POST['commentaire']) && !empty($_POST['commentaire'])){
             $commentaireToEdit = htmlentities(strip_tags($_POST['commentaire']));
             $commentaire_id = $_GET['commentaire_id'];
@@ -52,8 +48,33 @@ class MonstreDetailsController extends Controller{
             $commentaireObj = new CommentaireManager();
             $commentaireObj->insert([$_SESSION['user']['id'],$id, $message]);
         }
-        $commentaires = $commentaireObj->getAll(null, "SELECT *,commentaire.id as id,user.id as user_id FROM commentaire join user on user.id = commentaire.user_id WHERE monstre_id = $id ORDER BY posted_at DESC");
-        $template = './views/template_monstre_details.phtml';
-        $this->render($template, ['monstre' => $monstre, 'commentaires' => $commentaires, 'els' => $els, 'favori' => $favori, 'id' => $id]);        
+        header('Location: ?page=monstredetails&id='.$id);
+    }
+
+    public function favori(){
+        $userObj = new UserManager();
+        $utilsObj = new Utils();
+        $id = $_GET['id'];
+        $user = $utilsObj->getUser($_SESSION['user']['id']);
+        $user_id = $user['id'];
+        $favori = json_decode($user['favori']);
+        if (isset($_GET['heart']) && $_GET['heart'] === "true") {
+            $favori[] = $_GET['id'];
+            $favori = json_encode($favori);
+            $userObj->update("UPDATE user SET favori = '$favori' WHERE id = '$user_id'");
+        }
+        if (isset($_GET['heart']) && $_GET['heart'] === "false"){
+            $index = array_search($id,$favori);
+            array_splice($favori,$index,1);
+            $favori = json_encode($favori);
+            $userObj->update("UPDATE user SET favori = '$favori' WHERE id = '$user_id'");
+        }
+    }
+
+    public function delete(){
+        $commentaire_id = $_GET['commentaire_id'];
+        $commentaireObj = new CommentaireManager();
+        $commentaireObj->delete($commentaire_id);
+        header('Location: ?page=monstredetails&id='.$_GET['id']);
     }
 }

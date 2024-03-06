@@ -2,19 +2,48 @@
 namespace App\Controllers;
 use App\Models\UserManager;
 use App\Models\UserDetailsManager;
-use App\Services\Utils;
+use App\Models\CommentaireManager;
 use App\Controllers\Controller;
+use App\Services\Utils;
 
-class AdminUserEditController extends Controller
+
+class AdminUserController extends Controller
 {
     public function index()
     {
         $utilsObj = new Utils();
         $utilsObj->verifAdmin();
         $userObj = new UserManager();
+        $users = $userObj->getAll(null,"SELECT *,user.id as id FROM user join user_details on user.id = user_details.user_id");
+        $template = './views/template_admin_user_tab.phtml';
+        $this->render($template, ['users' => $users]);
+    }
+
+    public function delete()
+    {
+        $id = $_GET['id'];
+        $commentaireObj = new CommentaireManager();
+        $commentaireObj->delete(null, "DELETE FROM commentaire WHERE user_id = $id");
+        $userDetailsObj = new UserDetailsManager();
+        $userDetailsObj->delete(null, "DELETE FROM user_details WHERE user_id = $id");
+        $userObj = new UserManager();
+        $user = $userObj->getOneById($id);
+        $pathToDelete = $user['avatar'];
+        if ($pathToDelete != './assets/avatars/default.jpg') {
+            unlink($pathToDelete);
+        }
+        $userObj->delete($id);
+        var_dump($user);
+        header('Location: ?page=adminuser');
+    }
+
+    public function edit()
+    {
+        $utilsObj = new Utils();
+        $utilsObj->verifAdmin();
+        $userObj = new UserManager();
         $id = $_GET['id'];
         $user = $userObj->getOneById(null,"SELECT *,user.id as id FROM user join user_details on user.id = user_details.user_id WHERE user.id = $id");
-        var_dump($user);
         $errors = [];
         $state =[
             "Auvergne-Rhône-Alpes",
@@ -52,7 +81,6 @@ class AdminUserEditController extends Controller
                         $roles[] = $role;
                     }
                 }
-                var_dump($roles);
                 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
                     $errors[] = "L'email n'est pas valide";
                 }
@@ -63,11 +91,10 @@ class AdminUserEditController extends Controller
                     $userDetailsObj = new UserDetailsManager();
                     $userDetailsObj->update("UPDATE user_details SET firstname = '$firstname', lastname = '$lastname', address1 = '$address1', address2 = '$address2', zip = '$zip', city = '$city', state = '$state' WHERE user_id = '$id'");
                     $success = true;
-                    header("Location: ?page=adminusertab");
+                    header("Location: ?page=adminuser");
                 }
             }
             $template = './views/template_admin_user_edit.phtml';
             $this->render($template, ['user' => $user,'errors' => $errors,'state' => $state]);
     }
-
 }

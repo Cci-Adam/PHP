@@ -38,7 +38,7 @@ abstract class AbstractManager
         $str_fields = implode(",",$fields);
         $str_values = implode(",",$values);
         $query = "INSERT INTO ".self::$tableName." ($str_fields) VALUES ($str_values)";
-        var_dump($query);
+
         $insert = self::$db->query($query,$data);
         return $insert;
     }
@@ -46,7 +46,6 @@ abstract class AbstractManager
     public function delete($id,$query = null): void
     {
         $sql_query = !is_null($query) ? $query : "DELETE FROM ".self::$tableName." WHERE id = $id";
-        
         self::$db->query($sql_query);
     }
 }

@@ -7,6 +7,10 @@ class Authenticator
     public function __construct()
     {
         if(!isset($_SESSION)) session_start();
+        if (isset($_COOKIE[CONFIG_COOKIE_NAME])) {
+            unserialize($_COOKIE[CONFIG_COOKIE_NAME]);
+            $_SESSION['user'] = unserialize($_COOKIE[CONFIG_COOKIE_NAME]);
+        }
     }
 
     private function setSession($userData){
@@ -30,6 +34,7 @@ class Authenticator
         $prevPage = $_SERVER['HTTP_REFERER'];
         $prevPage = explode("?", $prevPage);
         $prevPage = '?'.$prevPage[1];
+        setcookie(CONFIG_COOKIE_NAME,"",time()-1);
         header('Location: ./'.$prevPage);
     }
 

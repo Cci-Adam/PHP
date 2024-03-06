@@ -98,7 +98,7 @@
                         <div class="w-100">
                             <h5>@<?= $commentaire['username'] ?></h5>
                             <?php if(isset($_GET['commentaire_id']) && $_GET['commentaire_id'] == $commentaire['id'] && App\Services\Utils::isUserConnected() && (App\Services\Authenticator::isRole('ROLE_ADMIN') || $commentaire['user_id'] == $_SESSION['user']['id'])) : ?>
-                            <form action="?page=monstredetails&id=<?= $monstre['id'] ?>&commentaire_id=<?= $commentaire['id'] ?>" method="POST">
+                            <form action="?page=monstredetails&action=Commentaire&id=<?= $monstre['id'] ?>&commentaire_id=<?= $commentaire['id'] ?>" method="POST">
                                 <textarea class="form-control" name="commentaire" id="commentaire" cols="30" rows="4" placeholder="Ajouter un commentaire" required><?= $commentaire['commentaire'] ?></textarea>
                                 <button type="submit" class="btn btn-primary">Valider</button>
                             </form>
@@ -109,14 +109,14 @@
                         </div>
                         <?php if(App\Services\Utils::isUserConnected() && (in_array('ROLE_ADMIN',json_decode($_SESSION['user']['roles'])) || $commentaire['user_id'] == $_SESSION['user']['id'])) : ?>
                             <form action="?page=monstredetails&id=<?= $monstre['id'] ?>&commentaire_id=<?= $commentaire['id'] ?>" method="POST"><button type="submit" class="btn btn-primary">Modifier</button></form>
-                            <form action="?page=delete&tab=commentaire&commentaire_id=<?= $commentaire['id'] ?>&id=<?= $monstre['id'] ?>" method="POST"><button type="submit" class="btn btn-danger">Supprimer</button></form>
+                            <form action="?page=monstredetails&action=delete&commentaire_id=<?= $commentaire['id'] ?>&id=<?= $monstre['id'] ?>" method="POST"><button type="submit" class="btn btn-danger">Supprimer</button></form>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
         <div class="tab-pane fade" id="ajout" role="tabpanel" aria-labelledby="ajout-tab">
-            <form action="?page=monstredetails&id=<?= $monstre['id'] ?>" method="POST">
+            <form action="?page=monstredetails&action=Commentaire&id=<?= $monstre['id'] ?>" method="POST">
                 <div class="mb-3">
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here" id="ajoutText" name="message" style="height: 100px"></textarea>
@@ -135,7 +135,7 @@
         
         if(heart.checked === true){
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "?page=monstredetails&id=" + <?= $monstre['id'] ?> + "&heart=true", true);
+            xhr.open("GET", "?page=monstredetails&action=Favori&id=" + <?= $monstre['id'] ?> + "&heart=true", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     var response = xhr.responseText;
@@ -147,7 +147,7 @@
         }
         else{
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "?page=monstredetails&id=" + <?= $monstre['id'] ?> + "&heart=false", true);
+            xhr.open("GET", "?page=monstredetails&action=Favori&id=" + <?= $monstre['id'] ?> + "&heart=false", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     var response = xhr.responseText;

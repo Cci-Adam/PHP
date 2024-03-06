@@ -1,6 +1,6 @@
 <section id="contact" class="p-3">
     <h1>Edit User</h1>
-    <form class="row g-3" action="?page=adminuseredit<?php echo "&id=".$_GET['id']; ?>" method="POST">
+    <form class="row g-3" action="?page=adminuser&action=edit&id=<?php echo "&id=".$_GET['id']; ?>" method="POST">
         <div class="col-md-6">
             <label for="inputNom" class="form-label">Firstname</label>
             <input type="text" class="form-control" id="inputNom" name="firstname" value="<?= $user['firstname'] ?>" required>

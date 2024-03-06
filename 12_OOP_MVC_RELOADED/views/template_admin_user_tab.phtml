@@ -18,7 +18,7 @@
         <td><?php echo $user['email'] ?></td>
         <td><?php echo $user['register_at'] ?></td>
         <td>
-            <a href="?page=adminuseredit&id=<?php echo $user['id'] ?>"><button class="btn btn-primary">Modifier</button></a>
+            <a href="?page=adminuser&action=edit&id=<?php echo $user['id'] ?>"><button class="btn btn-primary">Modifier</button></a>
             <a href="javascript:confirmDelete(<?php echo $user['id'] ?>)"><button class="btn btn-danger" >Supprimer</button></a>
         </td>
     </tr>
@@ -30,7 +30,7 @@
     function confirmDelete(id) {
         const question = window.confirm("Etes vous sur de vouloir supprimer ce monstre ?");
         if(question===true) {
-            location.href = "?page=delete&tab=user&id=" + id
+            location.href = "?page=adminuser&action=delete&id=" + id
         }
     }
 </script>

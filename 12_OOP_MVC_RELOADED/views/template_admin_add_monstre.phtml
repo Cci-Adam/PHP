@@ -1,4 +1,4 @@
-<form class="row g-3 m-3" method="POST" action="?page=adminaddmonstre<?php if(isset($_GET['id'])) {echo "&id=".$_GET['id'];} ?>" enctype="multipart/form-data">
+<form class="row g-3 m-3" method="POST" action="?page=adminmonstre&action=<?=$_GET['action']?><?php if(isset($_GET['id'])) {echo "&id=".$_GET['id'];} ?>" enctype="multipart/form-data">
     <div class="col-md-6">
         <label for="inputEmail4" class="form-label">Nom</label>
         <input type="text" class="form-control" id="inputEmail4" name="nom" value="<?= isset($_GET['id']) ? $monstre['nom'] :  '' ?>" required>

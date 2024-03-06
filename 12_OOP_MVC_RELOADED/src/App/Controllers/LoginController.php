@@ -14,6 +14,10 @@ class LoginController{
             $prevPage = '?'.$prevPage[1];
             var_dump($prevPage);
             if($auth->login($email,$password)){
+                if(isset($_POST['remember_me'])){
+                    $cookieData = serialize($_SESSION['user']);
+                    setcookie(CONFIG_COOKIE_NAME,$cookieData,time()+3600);
+                }
             }
             else{
                 $errors[]="Mot de passe ou email invalide";
